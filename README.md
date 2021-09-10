@@ -1,7 +1,7 @@
 # cpp-doctest-example
-Experimental example for dockets C++ library per CMake package management.
+Experimental example for docktest C++ library per CMake package management.
 
 ## Status
 Experimental
 
-**Note**: Thedefault branch is `default`.
+**Note**: The default branch is `default`.
