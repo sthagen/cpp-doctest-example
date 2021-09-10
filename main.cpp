@@ -1,104 +1,30 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
 #include <doctest/doctest.h>
-#include <magic_enum.hpp>
+#include <tribonacci.hpp>
 
-enum class Color : int { RED = -10, BLUE = 0, GREEN = 10 };
-
-template <typename E>
-auto to_integer(magic_enum::Enum<E> value) {
-    // magic_enum::Enum<E> - C++17 Concept for enum type.
-    return static_cast<magic_enum::underlying_type_t<E>>(value);
+TEST_CASE("tribonacci recursive values below 1000") {
+    // 0, 0, 1, 1, 2, 4, 7, 13, 24, 44, 81, 149, 274, 504, 927, 1705, 3136, 5768, 10609, 19513, 35890, 66012, … (sequence A000073 in the OEIS)
+    CHECK(tribonacci(0) == 0);
+    CHECK(tribonacci(1) == 0);
+    CHECK(tribonacci(2) == 1);
+    CHECK(tribonacci(3) == 1);
+    CHECK(tribonacci(4) == 2);
+    CHECK(tribonacci(5) == 4);
+    CHECK(tribonacci(6) == 7);
+    CHECK(tribonacci(7) == 13);
+    CHECK(tribonacci(8) == 24);
+    CHECK(tribonacci(9) == 44);
+    CHECK(tribonacci(10) == 81);
+    CHECK(tribonacci(11) == 149);
+    CHECK(tribonacci(12) == 274);
+    REQUIRE(tribonacci(13) == 504);
+    REQUIRE(tribonacci(14) == 927);
 }
 
-
-TEST_CASE("Enum variable to string name") {
-    Color c1 = Color::RED;
-    REQUIRE(magic_enum::enum_name(c1) == "RED");
-}
-
-int _transform_these_main() {
-  // Enum variable to string name.
-  Color c1 = Color::RED;
-  auto c1_name = magic_enum::enum_name(c1);
-  // std::cout << c1_name << std::endl; // RED
-
-  // String enum name sequence.
-  constexpr auto& names = magic_enum::enum_names<Color>();
-  // std::cout << "Color names:";
-  for (const auto& n : names) {
-    // std::cout << " " << n;
-  }
-  // std::cout << std::endl;
-  // Color names: RED BLUE GREEN
-
-  // String name to enum value.
-  auto c2 = magic_enum::enum_cast<Color>("BLUE");
-  if (c2.has_value()) {
-    // std::cout << "BLUE = " << to_integer(c2.value()) << std::endl; // BLUE = 0
-  }
-
-  // Integer value to enum value.
-  auto c3 = magic_enum::enum_cast<Color>(10);
-  if (c3.has_value()) {
-    // std::cout << "GREEN = " << magic_enum::enum_integer(c3.value()) << std::endl; // GREEN = 10
-  }
-
-  // Enum value to integer value.
-  auto c4_integer = magic_enum::enum_integer(Color::RED);
-  // std::cout << "RED = " << c4_integer << std::endl; // RED = -10
-
-  using namespace magic_enum::ostream_operators; // out-of-the-box ostream operator for all enums.
-  // Ostream operator for enum.
-  // std::cout << "Color: " << c1 << " " << c2 << " " << c3 << std::endl; // Color: RED BLUE GREEN
-
-  // Number of enum values.
-  // std::cout << "Color enum size: " << magic_enum::enum_count<Color>() << std::endl; // Color size: 3
-
-  // Indexed access to enum value.
-  // std::cout << "Color[0] = " << magic_enum::enum_value<Color>(0) << std::endl; // Color[0] = RED
-
-  // Enum value sequence.
-  constexpr auto& values = magic_enum::enum_values<Color>();
-  // std::cout << "Colors values:";
-  for (const auto& c : values) {
-    // std::cout << " " << c; // Ostream operator for enum.
-  }
-  // std::cout << std::endl;
-  // Color sequence: RED BLUE GREEN
-
-  enum class Flags { A = 1, B = 2, C = 4, D = 8 };
-  using namespace magic_enum::bitwise_operators; // out-of-the-box bitwise operators for all enums.
-  // Support operators: ~, |, &, ^, |=, &=, ^=.
-  Flags flag = Flags::A | Flags::C;
-  // std::cout << flag << std::endl; // 5
-
-  enum color { red, green, blue };
-
-  // Checks whether type is an Unscoped enumeration.
-  static_assert(magic_enum::is_unscoped_enum_v<color>);
-  static_assert(!magic_enum::is_unscoped_enum_v<Color>);
-  static_assert(!magic_enum::is_unscoped_enum_v<Flags>);
-
-  // Checks whether type is an Scoped enumeration.
-  static_assert(!magic_enum::is_scoped_enum_v<color>);
-  static_assert(magic_enum::is_scoped_enum_v<Color>);
-  static_assert(magic_enum::is_scoped_enum_v<Flags>);
-
-  return 0;
-}
-
-TEST_CASE("Enum pair (value enum, string enum name) sequence.") {
-    constexpr auto& entries = magic_enum::enum_entries<Color>();
-    for (const auto& e : entries) {
-        auto label = e.second;
-        auto value = static_cast<int>(e.first);
-        INFO("Color entry: ", label, " = ", value);
-        switch value {
-            case -10: CHECK(label == "RED");   break;
-            case   0: CHECK(label == "BLUE");  break;
-            case  10: CHECK(label == "GREEN"); break;
-        }
-        REQUIRE( value == -10 or value == 0 or value == 10);
+TEST_CASE("tribonacci iterative equals recursive implementation for values below 1000") {
+    for (unsigned i=0; i<15; ++i) {
+        INFO("The argument is ", i);
+        CHECK(tribonacci(i) == tribonacci_iter(i));
     }
 }
