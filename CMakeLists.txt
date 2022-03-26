@@ -27,7 +27,7 @@ CPMAddPackage(
 
 CPMAddPackage(
   NAME doctest
-  GITHUB_REPOSITORY sthagen/doctest
+  GITHUB_REPOSITORY sthagen/doctest-doctest
   GIT_TAG 2020.12
 )
 
